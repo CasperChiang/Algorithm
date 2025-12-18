@@ -1,5 +1,6 @@
 #include <algorithm>
 #include<bits/stdc++.h>
+#include <iostream>
 using namespace std;
 
 int main() {
@@ -30,7 +31,7 @@ int main() {
     //拼接
     array_1.insert(array_1.end(), array_2.begin() + 1, array_2.end());
     //截取
-    vector<int> sub1(array_2.begin() + 1, array_2.end() - 1);
+    vector<int> sub1(array_2.begin() + 1, array_2.end() - 1); //左闭右开的两个参数. 特别注意, array_2.begin()指向索引0, 而array_2.end()指向最后一个索引+1的虚拟索引.
     //升序排序
     sort(array_1.begin(), array_1.end());
     //翻转和降序排序
