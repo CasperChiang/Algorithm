@@ -4,6 +4,9 @@
 using namespace std;
 
 int main() {
+    //普通数组
+    int arr[5];
+    int nums[5] = {1, 3, 2, 5, 4};
     //定义和初始化
     vector<int> array_1;
     array_1 = {-1, -2, -3};
