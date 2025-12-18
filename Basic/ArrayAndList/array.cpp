@@ -1,6 +1,5 @@
-#include <algorithm>
 #include<bits/stdc++.h>
-#include <iostream>
+#include <climits>
 using namespace std;
 
 int main() {
@@ -40,6 +39,7 @@ int main() {
     //翻转和降序排序
     sort(array_1.begin(), array_1.end());
     reverse(array_1.begin(), array_1.end());
+    //清空
+    array_1.clear();
     return 0;
-
 }
