@@ -14,5 +14,6 @@ int main() {
     s.pop(); //无返回值
     //获取长度
     int length = s.size();
+
     return 0;
 }

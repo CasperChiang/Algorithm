@@ -19,6 +19,8 @@ int main() {
     //删除
     array_2.erase(array_2.begin() + 1);
     cout << array_2[1] << "\n";
+    //删除最后一个元素
+    array_2.pop_back(); //或者array_2.erase(data.end() - 1);
     //获取长度
     int length = array_2.size();
     //遍历
