@@ -1,97 +1,143 @@
 #include <bits/stdc++.h>
-#include <iostream>
+#include <vector>
 using namespace std;
 
-class MatrixGraph {
-    vector<int> vertices;
+class Graph {
+    public:
+    vector<int> v_list;
     vector<vector<int>> matrix;
     
-    public: MatrixGraph(const vector<int> &vertices, const vector<vector<int>> &edges) {
-        for(int v : vertices) {
+    Graph(vector<int> vertices, vector<vector<int>> &edges) {
+        for(int &v : vertices) {
             add_vertex(v);
         }
-        for(const vector<int> &e : edges) { //1.每个元素是容器,拷贝时候需要给每个先创建内存,再拷贝,复杂度高.通过&,能够直接引用.const是防止误改. 同时, const和&要放在接收处, 而不是原数据edges
-            add_edge(e[0], e[1]);
+        for(vector<int> &e : edges) {
+            add_edge(e);
         }
     }
-    
-    int get_size() {
-        return vertices.size();
+
+    void add_edge(vector<int> e) {
+        matrix[e[0]][e[1]] = 1;
+        matrix[e[1]][e[0]] = 1;
     }
-    
-    void add_vertex(int val) {
-        int n = get_size();
-        vertices.push_back(val);
-        matrix.push_back(vector<int>(n, 0));
-        for(vector<int> &row : matrix) {
-            row.push_back(0);
+
+    void del_edge(vector<int> e) {
+        matrix[e[0]][e[1]] = 0;
+        matrix[e[1]][e[0]] = 0;
+    }
+
+    void add_vertex(int v) {
+        v_list.push_back(v);
+        for(vector<int> &i : matrix) {
+            i.push_back(0);
         }
+        matrix.push_back(vector<int>(v_list.size(),0));  //注意是怎么添加全0行的, 另外注意先添加列再添加行, 不然会多出一列.
     }
-    
-    void remove_vertex(int index) {
-        vertices.erase(vertices.begin() + index); //vertices.begin表明迭代器的第0个位置,必须写,只写index不是一种迭代器.
+
+    void del_vertex(int index) {
+        v_list.erase(v_list.begin() + index);
         matrix.erase(matrix.begin() + index);
-        for(vector<int> &row : matrix) {
-            row.erase(row.begin() + index);
-        }
+        for(vector<int> &i : matrix) {
+            i.erase(i.begin() + index);
+        } 
     }
-    
-    void add_edge(int a, int b) {
-        matrix[a][b] = 1;
-        matrix[b][a] = 1;
-    }
-    
-    void delete_edge(int a, int b) {
-        matrix[a][b] = 0;
-        matrix[b][a] = 0;
-    }
-    
-    void print_matrix() {
-        for(int v : vertices) {
+
+    void print_graph() {
+        cout << "顶点列表: ";
+        for(int v : v_list) {
             cout << v << " ";
         }
-        cout << "\n";
-        for(const vector<int> &row : matrix) {
-            for(int e : row) {
-                cout << e << "";
-            }
-            cout << "\n";
+        cout << endl;
+        
+        cout << "邻接矩阵:" << endl;
+        cout << "  ";
+        for(int v : v_list) {
+            cout << v << " ";
         }
+        cout << endl;
+        
+        for(int i = 0; i < matrix.size(); i++) {
+            cout << v_list[i] << " ";
+            for(int j = 0; j < matrix[i].size(); j++) {
+                cout << matrix[i][j] << " ";
+            }
+            cout << endl;
+        }
+        cout << "-------------------" << endl;
     }
+
+    bool has_edge(int u, int v) {
+        // 找到顶点u和v的索引
+        auto it_u = find(v_list.begin(), v_list.end(), u);
+        auto it_v = find(v_list.begin(), v_list.end(), v);
+        
+        if(it_u == v_list.end() || it_v == v_list.end()) return false;
+        
+        int idx_u = distance(v_list.begin(), it_u);
+        int idx_v = distance(v_list.begin(), it_v);
+        
+        return matrix[idx_u][idx_v] == 1;
+    }
+    
 };
+
+void print(const vector<vector<int>> &vec, const string &title = "二维向量") {
+    if (vec.empty()) {
+        cout << title << ": 空" << endl;
+        return;
+    }
+
+    cout << "┌─ " << title << " ";
+    for (size_t i = 0; i < vec[0].size() * 4; ++i) {
+        cout << "─";
+    }
+    cout << "┐" << endl;
+
+    // 打印列号
+    cout << "│   ";
+    for (size_t j = 0; j < vec[0].size(); ++j) {
+        cout << setw(3) << j << " ";
+    }
+    cout << "│" << endl;
+
+    // 打印分隔线
+    cout << "├───";
+    for (size_t j = 0; j < vec[0].size(); ++j) {
+        cout << "────";
+    }
+    cout << "┤" << endl;
+
+    // 打印数据
+    for (size_t i = 0; i < vec.size(); ++i) {
+        cout << "│" << setw(2) << i << " │";
+        for (const auto &elem : vec[i]) {
+            cout << setw(3) << elem << " ";
+        }
+        cout << "│" << endl;
+    }
+
+    cout << "└───";
+    for (size_t j = 0; j < vec[0].size(); ++j) {
+        cout << "────";
+    }
+    cout << "┘" << endl;
+
+    // 统计信息
+    cout << "  尺寸: " << vec.size() << " × " << vec[0].size()
+         << "，元素总数: " << vec.size() * vec[0].size() << endl;
+}
 
 int main() {
     vector<int> vertices = {0, 1, 2, 3};
     vector<vector<int>> edges = {{0, 1}, {1, 2}, {2, 3}, {3, 0}};
     
-    MatrixGraph g(vertices, edges);
-    
-    cout << "初始图邻接矩阵:" << endl;
-    g.print_matrix();
-    cout << endl;
-    
-    // 添加顶点
+    Graph g(vertices, edges);
+
     g.add_vertex(4);
-    cout << "添加顶点4后:" << endl;
-    g.print_matrix();
-    cout << endl;
-    
-    // 添加边
-    g.add_edge(1, 4);
-    cout << "添加边(1,4)后:" << endl;
-    g.print_matrix();
-    cout << endl;
-    
-    // 删除边
-    g.delete_edge(0, 1);
-    cout << "删除边(0,1)后:" << endl;
-    g.print_matrix();
-    cout << endl;
-    
-    // 删除顶点（索引2对应顶点2）
-    g.remove_vertex(2);
-    cout << "删除顶点2后:" << endl;
-    g.print_matrix();
-    
+    g.del_vertex(2);
+    vector<int> new_edge = {1, 3};
+    g.add_edge(new_edge);
+
+    print(g.matrix);
     return 0;
 }

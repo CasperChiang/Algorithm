@@ -45,6 +45,7 @@ void sift_up(vector<int> &data, int index) {
         if(p >= 0 && data[p] < data[index]) {
             swap(data[p], data[index]);
             sift_up(data, p);
+            index = p;
         } else {
             break;
         }
